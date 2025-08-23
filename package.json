@@ -11,7 +11,9 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
     "db:reset": "prisma migrate reset --force",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run",
+    "test:unit": "vitest run --dir tests/unit",
+    "test:int": "vitest run --dir tests/integration"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -46,6 +48,7 @@
     "prisma": "^6.14.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.4",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^2.0.5"
   }
 }
