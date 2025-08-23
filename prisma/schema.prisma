@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  name         String?
+  passwordHash String
+  role         String         @default("user")
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  trips        Trip[]
+  refreshTokens RefreshToken[]
+}
+
+model Vehicle {
+  id          String          @id @default(uuid())
+  plateNumber String          @unique
+  model       String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  trips       Trip[]
+  statuses    VehicleStatus[]
+}
+
+model Trip {
+  id          String   @id @default(uuid())
+  vehicleId   String
+  userId      String?
+  startTime   DateTime
+  endTime     DateTime?
+  distanceKm  Float?
+  startPlace  String?
+  endPlace    String?
+  createdAt   DateTime @default(now())
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
+  user        User?    @relation(fields: [userId], references: [id])
+}
+
+model VehicleStatus {
+  id         String   @id @default(uuid())
+  vehicleId  String
+  date       DateTime
+  status     String   // e.g., available | in_use | maintenance
+  odometer   Int?
+  note       String?
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id])
+
+  @@unique([vehicleId, date])
+}
+
+model RefreshToken {
+  id         String   @id @default(uuid())
+  userId     String
+  token      String   @unique
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+}
