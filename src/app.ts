@@ -12,8 +12,8 @@ import { VehicleService } from "./services/vehicleService";
 import { vehiclesRouter } from "./routes/vehicles";
 import { UserService } from "./services/userService";
 import { usersRouter } from "./routes/users";
-
-
+import { ReportService } from "./services/reportService";
+import { reportsRouter } from "./routes/reports";
 
 export function createApp(deps?: Partial<ReturnType<typeof buildServices>>) {
   const app = express();
@@ -22,7 +22,7 @@ export function createApp(deps?: Partial<ReturnType<typeof buildServices>>) {
 
   app.use(
     cors({
-      origin: ["http://localhost:5173", "http://127.0.0.1:5173", ],
+      origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
       credentials: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
@@ -43,11 +43,14 @@ export function createApp(deps?: Partial<ReturnType<typeof buildServices>>) {
   if (!services.users) {
     throw new Error("UserService is required");
   }
+  if (!services.reports) {
+    throw new Error("ReportService is required");
+  }
 
   app.use("/auth", authRouter({ auth: services.auth }));
   app.use("/vehicles", vehiclesRouter({ vehicles: services.vehicles }));
   app.use("/users", usersRouter({ users: services.users }));
-
+  app.use("/reports", reportsRouter({ reports: services.reports }));
 
   const spec = initSwagger();
   app.use("/docs", swaggerUi.serve, swaggerUi.setup(spec));
@@ -62,6 +65,7 @@ function buildServices() {
     auth: new AuthService(prisma),
     vehicles: new VehicleService(prisma),
     users: new UserService(prisma),
+    reports: new ReportService(prisma),
   };
 }
 
