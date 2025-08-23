@@ -14,7 +14,7 @@ async function main() {
   // (biarkan tabel user/vehicle tidak dihapus, karena kita pakai upsert)
 
   // --- USERS ---
-  const hash = await bcrypt.hash("password123", 10);
+  const hash = await bcrypt.hash("secret123", 10);
 
   // ganti ke "password" kalau field di schema kamu bukan "passwordHash"
   const admin = await prisma.user.upsert({

@@ -8,6 +8,9 @@ import { initSwagger } from "./swagger";
 import { prisma } from "./db";
 import { AuthService } from "./services/authService";
 import { authRouter } from "./routes/auth";
+import { VehicleService } from "./services/vehicleService";
+import { vehiclesRouter } from "./routes/vehicles";
+
 
 
 export function createApp(deps?: Partial<ReturnType<typeof buildServices>>) {
@@ -32,8 +35,12 @@ export function createApp(deps?: Partial<ReturnType<typeof buildServices>>) {
   if (!services.auth) {
     throw new Error("AuthService is required");
   }
+  if (!services.vehicles) {
+    throw new Error("VehicleService is required");
+  }
 
   app.use("/auth", authRouter({ auth: services.auth }));
+  app.use("/vehicles", vehiclesRouter({ vehicles: services.vehicles }));
 
 
   const spec = initSwagger();
@@ -47,7 +54,7 @@ export function createApp(deps?: Partial<ReturnType<typeof buildServices>>) {
 function buildServices() {
   return {
     auth: new AuthService(prisma),
-
+    vehicles: new VehicleService(prisma),
   };
 }
 

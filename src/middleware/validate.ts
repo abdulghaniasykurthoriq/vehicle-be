@@ -11,7 +11,12 @@ export function validate(schemas: Partial<Record<Parts, ZodSchema>>) {
       if (schemas.params) req.params = schemas.params.parse(req.params);
       next();
     } catch (err: any) {
-      return res.status(400).json({ message: "Validation error", errors: err.errors || err.message });
+      return res
+        .status(400)
+        .json({
+          message: "Validation error",
+          errors: err.errors || err.message,
+        });
     }
   };
 }
