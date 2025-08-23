@@ -11,6 +11,7 @@ import { ReportService } from "../../src/services/reportService";
 process.env.JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || "test-secret";
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!;
 
+
 const fakeServices = (overrides?: Partial<any>) => ({
   auth: {
     register: async (e: string) => ({ id: "u1", email: e }),
