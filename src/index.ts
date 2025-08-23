@@ -1,12 +1,9 @@
-import express from "express";
+import "dotenv/config";
+import { createApp } from "./app";
+import { config } from "./config";
 
-const app = express();
-const PORT = process.env.PORT || 4000;
-
-app.get("/", (req, res) => {
-  res.send("Hello Express + TypeScript 🚀");
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+const app = createApp();
+app.listen(config.port, () => {
+  console.log(`🚗 Vehicle API listening on http://localhost:${config.port}`);
+  console.log(`📚 Swagger UI at http://localhost:${config.port}/docs`);
 });
