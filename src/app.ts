@@ -10,6 +10,8 @@ import { AuthService } from "./services/authService";
 import { authRouter } from "./routes/auth";
 import { VehicleService } from "./services/vehicleService";
 import { vehiclesRouter } from "./routes/vehicles";
+import { UserService } from "./services/userService";
+import { usersRouter } from "./routes/users";
 
 
 
@@ -38,9 +40,13 @@ export function createApp(deps?: Partial<ReturnType<typeof buildServices>>) {
   if (!services.vehicles) {
     throw new Error("VehicleService is required");
   }
+  if (!services.users) {
+    throw new Error("UserService is required");
+  }
 
   app.use("/auth", authRouter({ auth: services.auth }));
   app.use("/vehicles", vehiclesRouter({ vehicles: services.vehicles }));
+  app.use("/users", usersRouter({ users: services.users }));
 
 
   const spec = initSwagger();
@@ -55,6 +61,7 @@ function buildServices() {
   return {
     auth: new AuthService(prisma),
     vehicles: new VehicleService(prisma),
+    users: new UserService(prisma),
   };
 }
 
