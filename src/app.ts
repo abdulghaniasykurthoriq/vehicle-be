@@ -23,6 +23,7 @@ export function createApp(deps?: Partial<ReturnType<typeof buildServices>>) {
   app.use(
     cors({
       origin: [
+        "https://103.183.75.108",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "https://103.186.1.205.nip.io",
