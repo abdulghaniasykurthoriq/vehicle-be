@@ -81,7 +81,7 @@ export function initSwagger() {
         },
       },
     },
-    apis: ["src/routes/**/*.{ts,tsx}", "dist/routes/**/*.js"],
+    apis: ["dist/src/routes/**/*.js", "dist/**/routes/**/*.js"],
   };
   return swaggerJSDoc(options);
 }
