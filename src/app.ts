@@ -22,7 +22,7 @@ export function createApp(deps?: Partial<ReturnType<typeof buildServices>>) {
   app.set("trust proxy", true);
   app.use(
     cors({
-      origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+      origin: ["http://localhost:5173", "http://127.0.0.1:5173", "https://103.183.75.108"],
       credentials: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
