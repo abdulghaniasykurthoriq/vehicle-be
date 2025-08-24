@@ -19,7 +19,7 @@ export function createApp(deps?: Partial<ReturnType<typeof buildServices>>) {
   const app = express();
   app.use(helmet());
   app.use(morgan("dev"));
-
+  app.set("trust proxy", true);
   app.use(
     cors({
       origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
