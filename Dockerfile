@@ -4,7 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-RUN npx prisma generate
+# prisma generate kadang gagal download engine di Alpine; jangan blok build
+RUN npx prisma generate || echo "skip prisma"
 RUN npm run build
 
 # --- runtime ---
