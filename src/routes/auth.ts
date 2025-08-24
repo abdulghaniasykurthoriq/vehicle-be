@@ -104,8 +104,8 @@ export function authRouter(services: { auth: AuthService }) {
   const cookieBase = {
     httpOnly: true,
     path: "/", // penting: konsisten untuk set & clear
-    secure: isProd ? true : false, // false di localhost (http)
-    sameSite: isProd ? "none" : "lax", // none+secure hanya di prod/https
+    secure: true, // false di localhost (http)
+    sameSite: "none", // none+secure hanya di prod/https
   } as const;
 
   /**
@@ -271,9 +271,19 @@ export function authRouter(services: { auth: AuthService }) {
   r.post("/logout", async (req, res) => {
     const rt = req.cookies?.refreshToken as string | undefined;
     if (rt) await services.auth.logout(rt).catch(() => {});
-    res.clearCookie("refreshToken", { path: "/" });
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+    });
     // kalau dulu kamu set accessToken di cookie, clear juga:
-    res.clearCookie("accessToken", { path: "/" });
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+    });
     return res.json({ ok: true });
   });
 
