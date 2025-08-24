@@ -24,9 +24,13 @@ export function createApp(deps?: Partial<ReturnType<typeof buildServices>>) {
     cors({
       origin: [
         "https://103.183.75.108",
+        "http://103.183.75.108",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "https://103.186.1.205.nip.io",
+        "http://localhost:4173",
+        "https://103-186-1-205.nip.io", // ✅ nip.io pakai strip
+        "https://api.103-186-1-205.nip.io",
+        "https://app.103-186-1-205.nip.io",
       ],
       credentials: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],

@@ -2,14 +2,17 @@
 import swaggerJSDoc from "swagger-jsdoc";
 
 export function initSwagger() {
+  const serverUrl =
+    process.env.SWAGGER_SERVER_URL ??
+    (process.env.NODE_ENV === "production"
+      ? "https://103-186-1-205.nip.io" // ✅ nip.io pakai strip
+      : "http://localhost:4000");
+
   const options = {
     definition: {
       openapi: "3.0.3",
       info: { title: "Vehicle API", version: "1.0.0" },
-      servers: [
-        { url: process.env.SWAGGER_SERVER_URL || "http://localhost:4000" },
-      ],
-
+      servers: [{ url: serverUrl }], // ✅ dinamis via env
       components: {
         securitySchemes: {
           bearerAuth: { type: "http", scheme: "bearer", bearerFormat: "JWT" },
@@ -81,7 +84,14 @@ export function initSwagger() {
         },
       },
     },
-    apis: ["dist/src/routes/**/*.js", "dist/**/routes/**/*.js"],
+    // ✅ dukung dev (ts) & build (js)
+    apis: [
+      "src/routes/**/*.ts",
+      "src/**/routes/**/*.ts",
+      "dist/routes/**/*.js",
+      "dist/**/routes/**/*.js",
+    ],
   };
+
   return swaggerJSDoc(options);
 }

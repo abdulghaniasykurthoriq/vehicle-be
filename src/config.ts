@@ -1,6 +1,11 @@
 export const config = {
   port: Number(process.env.PORT || 4000),
-  corsOrigin: process.env.CORS_ORIGIN || "http://localhost:4000",
+
+  // baca banyak origin, pisahkan koma
+  corsOrigins: (process.env.CORS_ORIGINS ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean),
   jwt: {
     accessSecret:
       process.env.JWT_ACCESS_SECRET || "dev_access_secret_change_me",

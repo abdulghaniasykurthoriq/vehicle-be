@@ -5,9 +5,12 @@ services:
     container_name: yourapp
     env_file: .env
     environment:
-      - SWAGGER_SERVER_URL=https://103.186.1.205
+      # ✅ pakai host nip.io yang sesuai sertifikat
+      - SWAGGER_SERVER_URL=https://103-186-1-205.nip.io
+      # ✅ daftar origin FE/Swagger yang boleh akses (pisahkan koma)
+      - CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,https://103-186-1-205.nip.io
     ports:
-      - "127.0.0.1:4000:4000"   # expose ke localhost saja; dilewati Nginx
+      - "127.0.0.1:4000:4000" # expose ke localhost saja; dilewati Nginx
     depends_on:
       - postgres
     restart: unless-stopped
@@ -22,18 +25,17 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
-  
+
   pgadmin:
-   image: dpage/pgadmin4:8
-   environment:
-     PGADMIN_DEFAULT_EMAIL: admin@example.com
-     PGADMIN_DEFAULT_PASSWORD: admin12345
-   ports:
-     - "127.0.0.1:5050:80"
-   depends_on:
-     - postgres
-   restart: unless-stopped
+    image: dpage/pgadmin4:8
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin12345
+    ports:
+      - "127.0.0.1:5050:80"
+    depends_on:
+      - postgres
+    restart: unless-stopped
 
 volumes:
   pgdata:
-  
