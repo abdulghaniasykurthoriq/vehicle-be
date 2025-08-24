@@ -4,6 +4,8 @@ services:
     build: .
     container_name: yourapp
     env_file: .env
+    environment:
+      - SWAGGER_SERVER_URL=https://103.186.1.205
     ports:
       - "127.0.0.1:4000:4000"   # expose ke localhost saja; dilewati Nginx
     depends_on:
