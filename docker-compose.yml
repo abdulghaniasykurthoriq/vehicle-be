@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  app:
+    build: .
+    container_name: yourapp
+    env_file: .env
+    ports:
+      - "127.0.0.1:4000:4000"   # expose ke localhost saja; dilewati Nginx
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:17
+    container_name: vehicledb
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:password}
+      POSTGRES_DB: ${POSTGRES_DB:vehicledb}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+  
+  pgadmin:
+   image: dpage/pgadmin4:8
+   environment:
+     PGADMIN_DEFAULT_EMAIL: admin@example.com
+     PGADMIN_DEFAULT_PASSWORD: admin12345
+   ports:
+     - "127.0.0.1:5050:80"
+   depends_on:
+     - postgres
+   restart: unless-stopped
+
+volumes:
+  pgdata:
+  
