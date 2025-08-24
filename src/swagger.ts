@@ -6,8 +6,10 @@ export function initSwagger() {
     definition: {
       openapi: "3.0.3",
       info: { title: "Vehicle API", version: "1.0.0" },
-      servers: [{ url: process.env.SWAGGER_SERVER_URL || "http://localhost:4000" },],
-      
+      servers: [
+        { url: process.env.SWAGGER_SERVER_URL || "http://localhost:4000" },
+      ],
+
       components: {
         securitySchemes: {
           bearerAuth: { type: "http", scheme: "bearer", bearerFormat: "JWT" },
@@ -79,7 +81,7 @@ export function initSwagger() {
         },
       },
     },
-    apis: ["./src/routes/*.ts"],
+    apis: ["src/routes/**/*.{ts,tsx}", "dist/routes/**/*.js"],
   };
   return swaggerJSDoc(options);
 }
