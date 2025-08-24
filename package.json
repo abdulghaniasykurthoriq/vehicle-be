@@ -10,7 +10,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
-    "seed": "tsx prisma/seed.ts",
+    "seed": "node dist/prisma/seed.js",
     "db:reset": "prisma migrate reset --force",
     "test": "vitest run",
     "test:unit": "vitest run --dir tests/unit",
