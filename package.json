@@ -37,7 +37,6 @@
     "swagger-ui-express": "^5.0.1",
     "zod": "^3.23.8"
   },
-  "type": "module",
   "devDependencies": {
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
