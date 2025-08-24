@@ -1,44 +1,45 @@
-# --- builder ---
-FROM node:20-alpine AS builder
+# --- gen (DEBIAN): generate Prisma Client dengan engine musl ---
+FROM node:20-bullseye-slim AS gen
 WORKDIR /app
-
-# tools yang dibutuhkan prisma di alpine
-RUN apk add --no-cache openssl ca-certificates
-
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates openssl && rm -rf /var/lib/apt/lists/*
 COPY package*.json ./
 RUN npm ci
+# cukup copy folder prisma + file yang dipakai saat generate
+COPY prisma ./prisma
+# kalau client pakai env, copy .env juga (opsional)
+# COPY .env ./.env
+# generate client dgn target musl (sesuai schema.prisma)
+RUN npx prisma generate
 
+# --- builder (ALPINE): build app TS, tanpa prisma generate ---
+FROM node:20-alpine AS builder
+WORKDIR /app
+RUN apk add --no-cache openssl ca-certificates
+COPY package*.json ./
+RUN npm ci
 COPY . .
-
-# prisma generate: retry 3x biar gak gagal karena jaringan
-# kalau tetap gagal, lanjutkan build (nanti generate di runtime)
-RUN for i in 1 2 3; do npx prisma generate && exit 0 || echo "prisma generate retry $i"; sleep 3; done; \
-    echo "skip prisma in builder"
-
-# compile TS (opsi 2: rootDir ".", seed ikut ke dist)
+# timpa hasil prisma client dari stage gen
+# ini berisi node_modules/@prisma/client + .prisma/engines dgn musl binaries
+COPY --from=gen /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=gen /app/node_modules/.prisma ./node_modules/.prisma
+# compile TS (opsi 2: rootDir ".", seed ikut dist)
 RUN npm run build
 
-# --- runtime ---
+# --- runtime (ALPINE) ---
 FROM node:20-alpine
 WORKDIR /app
 ENV NODE_ENV=production
-
-# prisma runtime butuh openssl & CA juga
 RUN apk add --no-cache openssl ca-certificates
-
 COPY package*.json ./
+# bawa semua node_modules dari builder (sudah ada prisma client & engines)
 COPY --from=builder /app/node_modules ./node_modules
 RUN npm prune --omit=dev
-
 COPY --from=builder /app/dist ./dist
 COPY prisma ./prisma
-
-# (opsional) mirror engine kalau binaries.prisma.sh sering lemot/blok
-# ENV PRISMA_ENGINES_MIRROR=https://prisma-builds.vercel.app
-
 EXPOSE 4000
-# tsconfig kamu opsi 2 (rootDir "."): hasilnya dist/src/index.js
+# kalau tsconfig rootDir "." ⇒ hasilnya dist/src/index.js
 CMD ["node", "dist/src/index.js"]
+
 
 
 # # --- builder ---
